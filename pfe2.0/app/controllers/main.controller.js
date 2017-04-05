@@ -6,12 +6,22 @@ module.exports = {
   show404:show404,
   showDemandes:showDemandes,
   register:register,
-  login:login
+  login:login,
+  logout:logout
 }
+  //logout function
+  function logout(req, res){
+    req.session.destroy(function(err) {
+  // cannot access session here
+});
+    res.render('login');
+  }
   //show the home route
   function showHome(req, res) {
 
-    Etudiant.findOne({first_name:'foued'},(err, etudiants) => {
+    var username = req.body.username;
+    var pwd = req.body.pwd;
+    Etudiant.findOne({username:username},(err, etudiants) => {
       if(err){
         throw(err);
         res.send('error occured');
@@ -21,16 +31,14 @@ module.exports = {
         var last_name = etudiants.last_name;
         res.render('index',{
           first_name:first_name,
-          last_name:last_name,
-          email:email,
+          last_name:last_name
         });
-
       }
     });
   }
 
   function showProfile (req, res) {
-    Etudiant.findOne({first_name:'foued'},(err, etudiants) => {
+    Etudiant.findOne({username:'hech'},(err, etudiants) => {
       if(err){
         throw(err);
         res.send('error occured');
@@ -41,6 +49,8 @@ module.exports = {
         var cin = etudiants.cin;
         var adress = etudiants.adress;
         var username = etudiants.username;
+        var date_naissance = etudiants.date_naissance;
+        var lieu_naissance = etudiants.lieu_naissance;
         var email = etudiants.email;
         var pwd = etudiants.pwd;
         res.render('profile',{
@@ -81,6 +91,7 @@ module.exports = {
     var section = req.body.section;
     var classe = req.body.classe;
     var pwd = req.body.pwd;
+    var tel = req.body.tel;
     var etudiant = {
       first_name:first_name,
       last_name:last_name,
@@ -92,7 +103,8 @@ module.exports = {
       date_naissance:date_naissance,
       section:section,
       classe:classe,
-      pwd:pwd
+      pwd:pwd,
+      tel:tel
     }
     //use etudiant model to insert/save
       var newetudiant = new Etudiant(etudiant);
@@ -101,6 +113,8 @@ module.exports = {
 
     //redirect
     res.redirect('/');
+
+
   }
 
   //show 3amar 404

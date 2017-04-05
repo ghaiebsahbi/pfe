@@ -9,10 +9,11 @@
   "author": "Mohamed Sahbi Ghaieb",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.17.1",
+    "body-parser": "*",
     "ejs": "*",
     "express": "*",
-    "morgan": "*",
-    "mongoose":"*"
+    "express-session": "^1.15.2",
+    "mongoose": "*",
+    "morgan": "*"
   }
 }
