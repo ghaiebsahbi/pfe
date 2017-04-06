@@ -77,10 +77,13 @@ module.exports = {
         var cin = user.cin;
         var adress = user.adress;
         var username = user.username;
-        var date_naissance = user.date_naissance;
-        var lieu_naissance = user.lieu_naissance;
         var email = user.email;
+        var lieu_naissance = user.lieu_naissance;
+        var date_naissance = user.date_naissance;
+        var section = user.section;
+        var classe = user.classe;
         var pwd = user.pwd;
+        var tel = user.tel;
         if(req.session.username == null || req.session.username == undefined){
           res.render('login');
         }
@@ -93,6 +96,11 @@ module.exports = {
           pwd:pwd,
           adress:adress,
           date_naissance:date_naissance,
+          lieu_naissance:lieu_naissance,
+          section:section,
+          classe:classe,
+          tel:tel,
+          username:username
         });
         }
       }
@@ -136,7 +144,7 @@ module.exports = {
   //show Demandes
   function showDemandes (req, res) {
     if(req.session.username){
-    console.log('Demandes from session ');
+    console.log('Demandes from session '+ req.session.username);
     Etudiant.findOne({username:req.session.username},(err, user) => {
       if(err){
         throw(err);
@@ -148,10 +156,13 @@ module.exports = {
         var cin = user.cin;
         var adress = user.adress;
         var username = user.username;
-        var date_naissance = user.date_naissance;
-        var lieu_naissance = user.lieu_naissance;
         var email = user.email;
+        var lieu_naissance = user.lieu_naissance;
+        var date_naissance = user.date_naissance;
+        var section = user.section;
+        var classe = user.classe;
         var pwd = user.pwd;
+        var tel = user.tel;
         res.render('demandes',{
           first_name:first_name,
           last_name:last_name,

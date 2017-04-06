@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Gentelella Alela! | </title>
+    <title>ESSAT Dashboard </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,7 +18,21 @@
 
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
-
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript">
+    // $(document).ready(function () {
+    //   $('#stage').click(function (){
+    //     $('#show-me').show('slow');
+    //   });
+    //
+    //  });
+    function show1(){
+    document.getElementById('show-me').style.display ='none';
+      }
+    function show2(){
+      document.getElementById('show-me').style.display = 'block';
+      }
+    </script>
   </head>
 
   <body class="nav-md">
@@ -26,9 +40,7 @@
       <div class="main_container">
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
-            <div class="navbar nav_title" style="border: 0;">
-              <a href="/" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
-            </div>
+
 
             <div class="clearfix"></div>
 
@@ -273,20 +285,24 @@
                     </ul>
                     <div class="clearfix"></div>
                   </div>
-                  <script type="text/javascript" src="/js/show.js"></script>
                   <div class="x_content">
-                    <input type="radio" value="Attestation de Reussite" name="demande">Attestation de reussite<br>
-                    <input type="radio" value="Attestation d'inscription" name="demande">Attestation d'inscription<br>
-                    <input type="radio" value="Attestation d'inscription" name="demande" id="stage">Demandes de Stage<br>
-                    <input type="radio" value="Attestation d'inscription" name="demande">Relevé de notes<br>
-                    <input type="radio" value="Attestation d'inscription" name="demande">Attestation de présence<br>
+                    <input type="radio" value="Attestation de Reussite" name="demande" onclick="show1();">Attestation de reussite<br>
+                    <input type="radio" value="Attestation d'inscription" name="demande" onclick="show1();">Attestation d'inscription<br>
+                    <input type="radio" value="Attestation d'inscription" name="demande" id="stage" onclick="show2();">Demandes de Stage<br>
+                    <input type="radio" value="Attestation d'inscription" name="demande" onclick="show1();">Relevé de notes<br>
+                    <input type="radio" value="Attestation d'inscription" name="demande" onclick="show1();">Attestation de présence<br>
                     <div id="show-me" hidden="hidden">
-                      <input type="text">
+                      <table>
+                        <tr><th>Encadreur :</th><th><input type="text" name="encadreur"></th></tr><br>
+                        <tr><th>Description projet: </th><th><textarea name="description" placeholder="description" width="50px"></textarea></th></tr><br>
+                        <tr><th>Binome:</th><th><input type="text" name="binome"></th></tr><br>
+                      </table>
                     </div>
                     <button class="btn-info">
                       Valider
                     </button>
                   </div>
+
                 </div>
               </div>
               <!--2nd pannel-->
