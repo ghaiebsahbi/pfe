@@ -10,13 +10,12 @@ var Etudiant = require('../models/database');
 mainController = require('../app/controllers/main.controller');
 
 
-  //Login page
-  router.get('/login',mainController.login);
-  //Home page
+//Login page
+router.get('/login',mainController.login);
+router.post('/login',mainController.login);
 
-  router.post('/',mainController.showHome);
-
-
+//Home page
+router.get('/',mainController.showHome);
 //Profile
 router.get('/profile',mainController.showProfile);
 //Demandes

@@ -11,55 +11,61 @@ module.exports = {
 }
   //logout function
   function logout(req, res){
+    console.log('session '+req.session.username+' destroyed');
     req.session.destroy(function(err) {
     if(err){
       throw err;
     }
+
   });
     res.render('login');
   }
   //show the home route
   function showHome(req, res) {
 
-    if(userID == null || userID == undefined)
-    {
-    var username = req.body.username;
-    var pwd = req.body.pwd;
-    } else{
-      var userID = req.session.userID;
-      var username = req.session.username;
-      var pwd = req.session.pwd;
-      }
-    if(username == null || username == undefined || pwd == null || pwd == undefined){
-      res.redirect('login');
-    }
-      else{
-    Etudiant.findOne({username:username, pwd:pwd},(err, user) => {
-      if(err){
-        throw(err);
-        res.send('error occured');
-      }
-      else if(!user)
-      {
+      if(req.session.username){
+        console.log('home from session '+req.session.username);
+        Etudiant.findOne({username:req.session.username},(err, user) => {
+          if(err){
+            throw(err);
+            res.send('error occured');
+            }
+          else
+          {
+            var first_name = user.first_name;
+            var last_name = user.last_name;
+            var cin = user.cin;
+            var adress = user.adress;
+            var username = user.username;
+            var date_naissance = user.date_naissance;
+            var lieu_naissance = user.lieu_naissance;
+            var email = user.email;
+            var pwd = user.pwd;
+            if(req.session.username == null || req.session.username == undefined){
+              res.redirect('login');
+            }
+            else {
+            res.render('index',{
+              first_name:first_name,
+              last_name:last_name,
+              email:email,
+              cin:cin,
+              pwd:pwd,
+              adress:adress,
+              date_naissance:date_naissance,
+            });
+            }
+          }
+        });
+      }else {
         res.redirect('login');
       }
-      else
-      {
-        var first_name = user.first_name;
-        var last_name = user.last_name;
-        req.session.username=user.username;
-        res.render('index',{
-          first_name:first_name,
-          last_name:last_name
-        });
-      }
-    });
-  }
 }
   function showProfile (req, res) {
-    var username = req.session.username;
 
-    Etudiant.findOne({username:username},(err, user) => {
+    if(req.session.username){
+          console.log('profile from session ');
+    Etudiant.findOne({username:req.session.username},(err, user) => {
       if(err){
         throw(err);
         res.send('error occured');
@@ -75,7 +81,7 @@ module.exports = {
         var lieu_naissance = user.lieu_naissance;
         var email = user.email;
         var pwd = user.pwd;
-        if(!req.session){
+        if(req.session.username == null || req.session.username == undefined){
           res.render('login');
         }
         else {
@@ -91,17 +97,47 @@ module.exports = {
         }
       }
     });
+  }else {
+    res.redirect('login');
   }
+}
   //Login
 
   function login(req, res, next){
-    res.render('login');
+    if(req.session.username){
+      res.redirect('/');
+      console.log('session deja en cours session: '+ req.session.username);
+    }
+    else{
+    Etudiant.findOne({username:req.body.username, pwd:req.body.pwd},(err, user) => {
+      if(err){
+        throw(err);
+        res.send('error occured');
+      }
+      else if(!user)
+      {
+        res.render('login');
+      }
+      else
+      {
+        var first_name = user.first_name;
+        var last_name = user.last_name;
+        req.session.username=user.username;
+        console.log('logged in with username '+req.session.username);
+        res.render('index',{
+          first_name:first_name,
+          last_name:last_name
+        });
+      }
+    });
   }
+}
 
   //show Demandes
   function showDemandes (req, res) {
-    var username = req.session.username;
-    Etudiant.findOne({username:username},(err, user) => {
+    if(req.session.username){
+    console.log('Demandes from session ');
+    Etudiant.findOne({username:req.session.username},(err, user) => {
       if(err){
         throw(err);
         res.send('error occured');
@@ -127,7 +163,10 @@ module.exports = {
         });
       }
     });
+  }else {
+    res.redirect('login');
   }
+}
 
   //insert into DB
   function register (req, res) {
@@ -166,11 +205,7 @@ module.exports = {
         res.send(err);
         }
       else {
-        //res.send(savedObject._id);
-        var userID = savedObject._id;
-        req.session.userId = userID;
         res.redirect('login');
-
       }});
     }
 
