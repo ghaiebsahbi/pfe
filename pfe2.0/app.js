@@ -21,7 +21,7 @@ app.use(session({
   secret: 'ih8node',
   resave: false,
   saveUninitialized: true
-}))
+}));
 
 
 //view engine

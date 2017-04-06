@@ -13,7 +13,7 @@ mainController = require('../app/controllers/main.controller');
   //Login page
   router.get('/login',mainController.login);
   //Home page
-  router.get('/',mainController.showHome);
+
   router.post('/',mainController.showHome);
 
 
