@@ -22,4 +22,6 @@ var etudiant = new Schema({
 //Create Etudiant model
 const etudiantSchema = mongoose.model('etudiant',etudiant);
 
+
+
 module.exports = etudiantSchema;

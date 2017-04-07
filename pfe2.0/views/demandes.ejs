@@ -285,24 +285,26 @@
                     </ul>
                     <div class="clearfix"></div>
                   </div>
-                  <div class="x_content">
-                    <input type="radio" value="Attestation de Reussite" name="demande" onclick="show1();">Attestation de reussite<br>
-                    <input type="radio" value="Attestation d'inscription" name="demande" onclick="show1();">Attestation d'inscription<br>
-                    <input type="radio" value="Attestation d'inscription" name="demande" id="stage" onclick="show2();">Demandes de Stage<br>
-                    <input type="radio" value="Attestation d'inscription" name="demande" onclick="show1();">Relevé de notes<br>
-                    <input type="radio" value="Attestation d'inscription" name="demande" onclick="show1();">Attestation de présence<br>
-                    <div id="show-me" hidden="hidden">
-                      <table>
-                        <tr><th>Encadreur :</th><th><input type="text" name="encadreur"></th></tr><br>
-                        <tr><th>Description projet: </th><th><textarea name="description" placeholder="description" width="50px"></textarea></th></tr><br>
-                        <tr><th>Binome:</th><th><input type="text" name="binome"></th></tr><br>
-                      </table>
+                  <form method="post" action="demande_doc">
+                    <div class="x_content">
+                      <input type="radio" value="Attestation de Reussite" name="demande" onclick="show1();">Attestation de reussite<br>
+                      <input type="radio" value="Attestation d'inscription" name="demande" onclick="show1();">Attestation d'inscription<br>
+                      <input type="radio" value="Demandes de Projet" name="demande" id="stage" onclick="show2();">Demandes de PFE/PFA<br>
+                      <input type="radio" value="Relevé de notes" name="demande" onclick="show1();">Relevé de notes<br>
+                      <input type="radio" value="Attestation de présence" name="demande" onclick="show1();">Attestation de présence<br>
+                      <div id="show-me" hidden="hidden">
+                        <table>
+                          <tr><th>Encadreur :</th><th><input type="text" name="encadreur"></th></tr><br>
+                          <tr><th>Description projet: </th><th><textarea name="description" placeholder="description" width="50px"></textarea></th></tr><br>
+                          <tr><th>Binome:</th><th><input type="text" name="binome"></th></tr><br>
+                          <tr><th>Titre Mémoire</th><th><input type="text" name="titre"></th></tr><br>
+                        </table>
+                      </div>
+                      <button class="btn-info">
+                        Valider
+                      </button>
                     </div>
-                    <button class="btn-info">
-                      Valider
-                    </button>
-                  </div>
-
+                  </form>
                 </div>
               </div>
               <!--2nd pannel-->

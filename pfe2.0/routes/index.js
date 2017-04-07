@@ -5,9 +5,9 @@ var mongoose = require('mongoose');
 //var etudiant = require('././models/database');
 var Etudiant = require('../models/database');
 
-
 //import main.controller
 mainController = require('../app/controllers/main.controller');
+adminController = require('../app/controllers/admin.controller');
 
 
 //Login page
@@ -20,6 +20,8 @@ router.get('/',mainController.showHome);
 router.get('/profile',mainController.showProfile);
 //Demandes
 router.get('/demandes',mainController.showDemandes);
+//Demandes POST REQUEST
+router.post('/demande_doc',mainController.demande_doc);
 //insertion etudiant
 router.post('/register',mainController.register);
 //Logout page

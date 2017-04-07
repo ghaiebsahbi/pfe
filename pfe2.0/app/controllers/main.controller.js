@@ -1,4 +1,5 @@
 var Etudiant = require('../../models/database');
+var Demande = require('../../models/demande');
 
 module.exports = {
   showHome:showHome,
@@ -7,7 +8,8 @@ module.exports = {
   showDemandes:showDemandes,
   register:register,
   login:login,
-  logout:logout
+  logout:logout,
+  demande_doc:demande_doc
 }
   //logout function
   function logout(req, res){
@@ -32,6 +34,7 @@ module.exports = {
             }
           else
           {
+
             var first_name = user.first_name;
             var last_name = user.last_name;
             var cin = user.cin;
@@ -45,6 +48,7 @@ module.exports = {
               res.redirect('login');
             }
             else {
+
             res.render('index',{
               first_name:first_name,
               last_name:last_name,
@@ -128,6 +132,7 @@ module.exports = {
       }
       else
       {
+
         var first_name = user.first_name;
         var last_name = user.last_name;
         req.session.username=user.username;
@@ -220,7 +225,57 @@ module.exports = {
       }});
     }
 
+    function demande_doc(req, res) {
+      //create etudiant
+      Etudiant.findOne({username:req.session.username},(err, user) => {
+      var first_name = user.first_name;
+      var last_name = user.last_name;
+      var cin = user.cin;
+      var adress = user.adress;
+      var lieu_naissance = user.lieu_naissance;
+      var date_naissance = user.date_naissance;
+      var section = user.section;
+      var classe = user.classe;
+      var date_demande = '07/04/2017';
+      var etat = 'false';
+      var nature = req.body.demande;
+      var email = user.email;
+      var encadreur = req.body.encadreur;
+      var description = req.body.description;
+      var binome = req.body.binome;
+      var memoir = req.body.titre;
+      var demande = {
+        email:email,
+        nature:nature,
+        etat:etat,
+        date_demande:date_demande,
+        first_name:first_name,
+        last_name:last_name,
+        cin:cin,
+        adress:adress,
+        lieu_naissance:lieu_naissance,
+        date_naissance:date_naissance,
+        section:section,
+        classe:classe,
+        memoir:memoir,
+        encadreur:encadreur,
+        description:description,
+        binome:binome
+      }
+      //use etudiant model to insert/save
+      var newdemande = new Demande(demande);
+        //save etudiant
+      newdemande.save(function(err, savedObject){
+        if(err){
+          res.send(err);
+          }
+          else{
+            res.send('demande avec succé');
+          }
+    });
 
+      });
+      }
   //show 3amar 404
   function show404 (req, res) {
     res.render('page_404');
