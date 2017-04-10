@@ -12,7 +12,7 @@ var demande = new Schema({
   date_naissance: {type: String, required: true} ,
   section: {type: String, required: true} ,
   nature: {type: String, required: true} ,
-  date_demande: {type: String, required: true} ,
+  date_demande: {type: Date, required: true, default:Date.now } ,
   etat : { type: Boolean, required: true},
   email:{type: String,} ,
   encadreur:{type:String} ,

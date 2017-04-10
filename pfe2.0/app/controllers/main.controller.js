@@ -9,8 +9,45 @@ module.exports = {
   register:register,
   login:login,
   logout:logout,
-  demande_doc:demande_doc
+  demande_doc:demande_doc,
+  inbox:inbox,
+  edit:edit
 }
+  inbox
+  function inbox(req,res){
+    if(req.session.username){
+      console.log('home from session '+req.session.username);
+      Etudiant.findOne({username:req.session.username},(err, user) => {
+        if(err){
+          throw(err);
+          res.send('error occured');
+          }
+        else
+        {
+
+          var first_name = user.first_name;
+          var last_name = user.last_name;
+          var username = req.session.username;
+          if(req.session.username == null || req.session.username == undefined){
+            res.redirect('login');
+          }
+          else {
+
+          res.render('inbox',{
+            first_name:first_name,
+            last_name:last_name,
+            username:username
+          });
+          }
+        }
+      });
+    }
+    else {
+      res.redirect('login')
+    }
+
+  }
+
   //logout function
   function logout(req, res){
     console.log('session '+req.session.username+' destroyed');
@@ -66,7 +103,6 @@ module.exports = {
       }
 }
   function showProfile (req, res) {
-
     if(req.session.username){
           console.log('profile from session ');
     Etudiant.findOne({username:req.session.username},(err, user) => {
@@ -113,6 +149,57 @@ module.exports = {
     res.redirect('login');
   }
 }
+
+//edit Profile
+function edit (req, res) {
+  if(req.session.username){
+        console.log('profile from session ');
+  Etudiant.updateOne({username:req.session.username},(err, user) => {
+    if(err){
+      throw(err);
+      res.send('error occured');
+      }
+    else
+    {
+      var first_name = req.body.first_name;
+      var last_name = req.body.last_name;
+      var cin = user.cin;
+      var adress = user.adress;
+      var username = user.username;
+      var email = user.email;
+      var lieu_naissance = user.lieu_naissance;
+      var date_naissance = user.date_naissance;
+      var section = user.section;
+      var classe = user.classe;
+      var pwd = user.pwd;
+      var tel = user.tel;
+      if(req.session.username == null || req.session.username == undefined){
+        res.render('login');
+      }
+      else {
+      res.render('profile',{
+        first_name:first_name,
+        last_name:last_name,
+        email:email,
+        cin:cin,
+        pwd:pwd,
+        adress:adress,
+        date_naissance:date_naissance,
+        lieu_naissance:lieu_naissance,
+        section:section,
+        classe:classe,
+        tel:tel,
+        username:username
+      });
+      }
+    }
+  });
+}else {
+  res.redirect('login');
+}
+}
+
+
   //Login
 
   function login(req, res, next){

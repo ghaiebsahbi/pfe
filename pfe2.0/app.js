@@ -14,7 +14,40 @@ var db = 'mongodb://localhost/pfe';
 mongoose.connect(db);
 
 var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io').listen(server);
 app.use(bodyParser.urlencoded({extended: false}));
+
+//test socket io
+
+users = [];
+connections = [];
+
+  io.sockets.on('connection',function(socket){
+  connections.push(socket);
+  console.log('connected %s sockets connected',connections.length);
+
+  socket.on('disconnect',function(data){
+    //disconnect
+    connections.splice(connections.indexOf(socket),1);
+    console.log('Disconnected %s sockets connected', connections.length);
+  });
+  //send message
+  socket.on('send message',function(data){
+    // console.log(data);
+    io.sockets.emit('new message',{msg:data});
+  });
+  socket.on('new user',function(data){
+    // console.log(data);
+    socket.username = req.session.username;
+    users.push(socket.username);
+    updateUsernames();
+  });
+  function updateUsernames(){
+    io.sockets.emit('get users,usernames');
+  }
+});
+
 
 //test session
 app.use(session({
@@ -30,7 +63,7 @@ app.set('view engine','ejs');
 app.use(express.static(__dirname + '/public'));
 
 
-app.listen(port, (req, res) =>{
+server.listen(port, (req, res) =>{
   console.log('listening to port '+port);
 });
 

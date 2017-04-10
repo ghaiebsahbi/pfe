@@ -14,10 +14,15 @@ adminController = require('../app/controllers/admin.controller');
 router.get('/login',mainController.login);
 router.post('/login',mainController.login);
 
+//inbox
+router.get('/inbox',mainController.inbox);
+
 //Home page
 router.get('/',mainController.showHome);
 //Profile
 router.get('/profile',mainController.showProfile);
+//Edit profile
+router.post('/edit',mainController.edit);
 //Demandes
 router.get('/demandes',mainController.showDemandes);
 //Demandes POST REQUEST
