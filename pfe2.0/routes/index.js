@@ -1,6 +1,17 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
+var multer  = require('multer');
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/uploads');
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname );
+  }
+})
+
+var upload = multer({ storage: storage })
 //require shcema and models
 //var etudiant = require('././models/database');
 var Etudiant = require('../models/database');
@@ -9,6 +20,14 @@ var Etudiant = require('../models/database');
 mainController = require('../app/controllers/main.controller');
 adminController = require('../app/controllers/admin.controller');
 
+//update photo
+router.post('/upload', upload.any(), mainController.uploadPic);
+
+//visit another users profile
+//router.get('/visit/:username',mainController.visit);
+
+//dem router
+router.get('/dem',mainController.dem);
 
 //Login page
 router.get('/login',mainController.login);
@@ -25,6 +44,7 @@ router.get('/profile',mainController.showProfile);
 router.post('/edit',mainController.edit);
 //Demandes
 router.get('/demandes',mainController.showDemandes);
+router.get('/demandes',mainController.dem);
 //Demandes POST REQUEST
 router.post('/demande_doc',mainController.demande_doc);
 //insertion etudiant

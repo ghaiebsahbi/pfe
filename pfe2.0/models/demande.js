@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 //create Demandes schema
 var demande = new Schema({
   first_name: {type: String, required: true} ,
+  username: {type: String, required: true} ,
   last_name: {type: String, required: true} ,
   cin: {type: String, required: true} ,
   adress: {type: String, required: true} ,

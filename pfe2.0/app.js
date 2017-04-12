@@ -25,8 +25,12 @@ connections = [];
 
   io.sockets.on('connection',function(socket){
   connections.push(socket);
-  console.log('connected %s sockets connected',connections.length);
+  for(i in connections){  console.log(connections[i]);}
 
+  console.log('connected %s sockets connected',connections.length);
+  socket.on('join', function (data) {
+  socket.join(data.username);
+  });
   socket.on('disconnect',function(data){
     //disconnect
     connections.splice(connections.indexOf(socket),1);
@@ -35,14 +39,14 @@ connections = [];
   //send message
   socket.on('send message',function(data){
     // console.log(data);
-    io.sockets.emit('new message',{msg:data});
+    io.sockets.in('username').emit('new message',{msg:data});
   });
-  socket.on('new user',function(data){
-    // console.log(data);
-    socket.username = req.session.username;
-    users.push(socket.username);
-    updateUsernames();
-  });
+  // socket.on('new user',function(data){
+  //   // console.log(data);
+  //   socket.username = req.session.username;
+  //   users.push(socket.username);
+  //   updateUsernames();
+  // });
   function updateUsernames(){
     io.sockets.emit('get users,usernames');
   }

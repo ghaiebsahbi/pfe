@@ -1,6 +1,6 @@
 var Etudiant = require('../../models/database');
 var Demande = require('../../models/demande');
-
+var multer  = require('multer');
 module.exports = {
   showHome:showHome,
   showProfile:showProfile,
@@ -11,9 +11,89 @@ module.exports = {
   logout:logout,
   demande_doc:demande_doc,
   inbox:inbox,
-  edit:edit
+  //visit:visit,
+  dem:dem,
+  edit:edit,
+  uploadPic:uploadPic
 }
-  inbox
+      function uploadPic(req, res, next){
+        if(req.session.username){
+          var upload = multer().single('avatar');
+          upload(req, res, function (err) {
+            if (err) {
+              // An error occurred when uploading dems[dem].nature
+          }
+          for(var fil in req.files){
+            Etudiant.findOneAndUpdate({ username:req.session.username }, { $set: { avatar: req.files[fil].filename } }, { new: true }, function(err, doc) {
+              console.log('changed avatar of '+req.session.username);
+            });
+          console.log(req.files[fil].filename);
+        }
+
+
+          res.redirect('/profile');
+    // Everything went fine
+  })
+        }
+      }
+
+      function dem(req, res){
+        if(req.session.username){
+        Demande.find({username:req.session.username},(err, data) => {
+          if(err){res.send(err)}
+          else{
+            var dems = [];
+            dems.push(data);
+            for(dem in dems){console.log();}
+          }
+        });
+        res.render('dem',{
+          dems:dems
+        });
+
+      }else(res.redirect('/'));
+    }
+  //visit
+  // function visit(req,res){
+  //   if(req.session.username){
+  //     Etudiant.findOne({username:req.session.username},(err,user)=>{
+  //
+  //     Etudiant.findOne({username2:req.params.username},(err,user2)=>{
+  //       var first_name = user.first_name;
+  //       var last_name = user.last_name;
+  //       var first_name2 = user2.first_name;
+  //       var last_name2 = user2.last_name;
+  //       var cin = user2.cin;
+  //       var adress = user2.adress;
+  //       var username = user2.username;
+  //       var email = user2.email;
+  //       var lieu_naissance = user2.lieu_naissance;
+  //       var date_naissance = user2.date_naissance;
+  //       var section = user2.section;
+  //       var classe = user2.classe;
+  //       var tel = user2.tel;
+  //     });
+  //     });
+  //     res.render('visit',{
+  //       first_name:first_name,
+  //       first_name2:first_name2,
+  //       last_name:last_name,
+  //       last_name2:last_name2,
+  //       cin:cin,
+  //       adress:adress,
+  //       username:username,
+  //       email:email,
+  //       lieu_naissance:lieu_naissance,
+  //       date_naissance:date_naissance,
+  //       section:section,
+  //       classe:classe,
+  //       tel:tel
+  //     })
+  //   }else
+  //   {
+  //     res.render(login);
+  //   }
+  // }
   function inbox(req,res){
     if(req.session.username){
       console.log('home from session '+req.session.username);
@@ -27,18 +107,14 @@ module.exports = {
 
           var first_name = user.first_name;
           var last_name = user.last_name;
+          var avatar = user.avatar;
           var username = req.session.username;
-          if(req.session.username == null || req.session.username == undefined){
-            res.redirect('login');
-          }
-          else {
-
           res.render('inbox',{
+            avatar:avatar,
             first_name:first_name,
             last_name:last_name,
             username:username
           });
-          }
         }
       });
     }
@@ -71,7 +147,7 @@ module.exports = {
             }
           else
           {
-
+            var avatar = user.avatar;
             var first_name = user.first_name;
             var last_name = user.last_name;
             var cin = user.cin;
@@ -87,6 +163,7 @@ module.exports = {
             else {
 
             res.render('index',{
+              avatar:avatar,
               first_name:first_name,
               last_name:last_name,
               email:email,
@@ -112,6 +189,7 @@ module.exports = {
         }
       else
       {
+        var avatar = user.avatar;
         var first_name = user.first_name;
         var last_name = user.last_name;
         var cin = user.cin;
@@ -124,12 +202,9 @@ module.exports = {
         var classe = user.classe;
         var pwd = user.pwd;
         var tel = user.tel;
-        if(req.session.username == null || req.session.username == undefined){
-          res.render('login');
-        }
-        else {
         res.render('profile',{
           first_name:first_name,
+          avatar:avatar,
           last_name:last_name,
           email:email,
           cin:cin,
@@ -142,7 +217,6 @@ module.exports = {
           tel:tel,
           username:username
         });
-        }
       }
     });
   }else {
@@ -219,12 +293,13 @@ function edit (req, res) {
       }
       else
       {
-
+        var avatar = user.avatar;
         var first_name = user.first_name;
         var last_name = user.last_name;
         req.session.username=user.username;
         console.log('logged in with username '+req.session.username);
         res.render('index',{
+          avatar:avatar,
           first_name:first_name,
           last_name:last_name
         });
@@ -243,6 +318,7 @@ function edit (req, res) {
         res.send('error occured');
       }else
       {
+        var avatar = user.avatar;
         var first_name = user.first_name;
         var last_name = user.last_name;
         var cin = user.cin;
@@ -255,17 +331,27 @@ function edit (req, res) {
         var classe = user.classe;
         var pwd = user.pwd;
         var tel = user.tel;
-        res.render('demandes',{
-          first_name:first_name,
-          last_name:last_name,
-          email:email,
-          cin:cin,
-          pwd:pwd,
-          adress:adress,
-          date_naissance:date_naissance,
+        Demande.find({username:req.session.username},(err, data) => {
+          var dems = [];
+          dems.push(data);
+          dems.forEach(function(dems){
+            res.render('demandes',{
+              avatar:avatar,
+              first_name:first_name,
+              last_name:last_name,
+              email:email,
+              cin:cin,
+              pwd:pwd,
+              adress:adress,
+              date_naissance:date_naissance,
+              dems:dems
+            });
+          });
         });
+
       }
     });
+
   }else {
     res.redirect('login');
   }
@@ -315,6 +401,8 @@ function edit (req, res) {
     function demande_doc(req, res) {
       //create etudiant
       Etudiant.findOne({username:req.session.username},(err, user) => {
+      var avatar = user.avatar;
+      var username = user.username;
       var first_name = user.first_name;
       var last_name = user.last_name;
       var cin = user.cin;
@@ -332,6 +420,8 @@ function edit (req, res) {
       var binome = req.body.binome;
       var memoir = req.body.titre;
       var demande = {
+        avatar:avatar,
+        username:username,
         email:email,
         nature:nature,
         etat:etat,
