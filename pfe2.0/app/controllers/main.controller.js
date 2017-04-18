@@ -1,3 +1,4 @@
+var bcrypt = require('bcryptjs');
 var Etudiant = require('../../models/database');
 var Demande = require('../../models/demande');
 var multer  = require('multer');
@@ -11,7 +12,7 @@ module.exports = {
   logout:logout,
   demande_doc:demande_doc,
   inbox:inbox,
-  //visit:visit,
+  visit:visit,
   dem:dem,
   edit:edit,
   uploadPic:uploadPic
@@ -53,47 +54,57 @@ module.exports = {
 
       }else(res.redirect('/'));
     }
-  //visit
-  // function visit(req,res){
-  //   if(req.session.username){
-  //     Etudiant.findOne({username:req.session.username},(err,user)=>{
-  //
-  //     Etudiant.findOne({username2:req.params.username},(err,user2)=>{
-  //       var first_name = user.first_name;
-  //       var last_name = user.last_name;
-  //       var first_name2 = user2.first_name;
-  //       var last_name2 = user2.last_name;
-  //       var cin = user2.cin;
-  //       var adress = user2.adress;
-  //       var username = user2.username;
-  //       var email = user2.email;
-  //       var lieu_naissance = user2.lieu_naissance;
-  //       var date_naissance = user2.date_naissance;
-  //       var section = user2.section;
-  //       var classe = user2.classe;
-  //       var tel = user2.tel;
-  //     });
-  //     });
-  //     res.render('visit',{
-  //       first_name:first_name,
-  //       first_name2:first_name2,
-  //       last_name:last_name,
-  //       last_name2:last_name2,
-  //       cin:cin,
-  //       adress:adress,
-  //       username:username,
-  //       email:email,
-  //       lieu_naissance:lieu_naissance,
-  //       date_naissance:date_naissance,
-  //       section:section,
-  //       classe:classe,
-  //       tel:tel
-  //     })
-  //   }else
-  //   {
-  //     res.render(login);
-  //   }
-  // }
+  visit
+  function visit (req, res) {
+    if(req.session.username){
+          console.log('visite %s from session %s ',req.params.username,req.session.username);
+    Etudiant.findOne({username:req.session.username},(err, user) => {
+      if(err){
+        throw(err);
+        res.send('error occured');
+        }
+      else
+      {
+        Etudiant.findOne({username:req.params.username},(err, data) => {
+        var avatar2 = data.avatar;
+        var avatar = user.avatar;
+        var first_name2 = data.first_name;
+        var last_name2 = data.last_name;
+        var first_name = user.first_name;
+        var last_name = user.last_name;
+        var cin = data.cin;
+        var adress = data.adress;
+        var username = data.username;
+        var email = data.email;
+        var lieu_naissance = data.lieu_naissance;
+        var date_naissance = data.date_naissance;
+        var section = data.section;
+        var classe = data.classe;
+        var tel = data.tel;
+        res.render('visit',{
+          first_name2:first_name2,
+          last_name2:last_name2,
+          avatar2:avatar2,
+          first_name:first_name,
+          avatar:avatar,
+          last_name:last_name,
+          email:email,
+          cin:cin,
+          adress:adress,
+          date_naissance:date_naissance,
+          lieu_naissance:lieu_naissance,
+          section:section,
+          classe:classe,
+          tel:tel,
+          username:username
+        });
+      });
+      }
+    });
+  }else {
+    res.redirect('login');
+  }
+}
   function inbox(req,res){
     if(req.session.username){
       console.log('home from session '+req.session.username);
@@ -227,47 +238,20 @@ module.exports = {
 //edit Profile
 function edit (req, res) {
   if(req.session.username){
-        console.log('profile from session ');
-  Etudiant.updateOne({username:req.session.username},(err, user) => {
-    if(err){
-      throw(err);
-      res.send('error occured');
-      }
-    else
-    {
-      var first_name = req.body.first_name;
-      var last_name = req.body.last_name;
-      var cin = user.cin;
-      var adress = user.adress;
-      var username = user.username;
-      var email = user.email;
-      var lieu_naissance = user.lieu_naissance;
-      var date_naissance = user.date_naissance;
-      var section = user.section;
-      var classe = user.classe;
-      var pwd = user.pwd;
-      var tel = user.tel;
-      if(req.session.username == null || req.session.username == undefined){
-        res.render('login');
-      }
-      else {
-      res.render('profile',{
-        first_name:first_name,
-        last_name:last_name,
-        email:email,
-        cin:cin,
-        pwd:pwd,
-        adress:adress,
-        date_naissance:date_naissance,
-        lieu_naissance:lieu_naissance,
-        section:section,
-        classe:classe,
-        tel:tel,
-        username:username
-      });
-      }
-    }
-  });
+        console.log('profile edited ');
+  var pwd = bcrypt.hashSync(req.body.pwd, bcrypt.genSaltSync(10));
+  Etudiant.update({username:req.session.username},{
+    first_name:req.body.first_name,
+    last_name:req.body.last_name,
+    cin: req.body.cin,
+    adress: req.body.adress,
+    username: req.body.username,
+    email: req.body.email,
+    lieu_naissance: req.body.lieu_naissance,
+    date_naissance: req.body.date_naissance,
+    pwd : pwd,
+    tel: req.body.tel
+    }).then(res.redirect('profile'));
 }else {
   res.redirect('login');
 }
@@ -282,7 +266,7 @@ function edit (req, res) {
       console.log('session deja en cours session: '+ req.session.username);
     }
     else{
-    Etudiant.findOne({username:req.body.username, pwd:req.body.pwd},(err, user) => {
+    Etudiant.findOne({username:req.body.username},(err, user) => {
       if(err){
         throw(err);
         res.send('error occured');
@@ -291,8 +275,8 @@ function edit (req, res) {
       {
         res.render('login');
       }
-      else
-      {
+
+      else if (bcrypt.compareSync(req.body.pwd,user.pwd)){
         var avatar = user.avatar;
         var first_name = user.first_name;
         var last_name = user.last_name;
@@ -316,8 +300,40 @@ function edit (req, res) {
       if(err){
         throw(err);
         res.send('error occured');
-      }else
+      }else if(user.role == 'admin')
       {
+        var avatar = user.avatar;
+        var first_name = user.first_name;
+        var last_name = user.last_name;
+        var cin = user.cin;
+        var adress = user.adress;
+        var username = user.username;
+        var email = user.email;
+        var lieu_naissance = user.lieu_naissance;
+        var date_naissance = user.date_naissance;
+        var section = user.section;
+        var classe = user.classe;
+        var pwd = user.pwd;
+        var tel = user.tel;
+        Demande.find({username:req.session.username},(err, data) => {
+          var dems = [];
+          dems.push(data);
+          dems.forEach(function(dems){
+            res.render('admin/demandes',{
+              avatar:avatar,
+              first_name:first_name,
+              last_name:last_name,
+              email:email,
+              cin:cin,
+              pwd:pwd,
+              adress:adress,
+              date_naissance:date_naissance,
+              dems:dems
+            });
+          });
+        });
+
+      }else {
         var avatar = user.avatar;
         var first_name = user.first_name;
         var last_name = user.last_name;
@@ -360,31 +376,20 @@ function edit (req, res) {
   //insert into DB
   function register (req, res) {
     //create etudiant
-    var first_name = req.body.first_name;
-    var last_name = req.body.last_name;
-    var cin = req.body.cin;
-    var adress = req.body.adress;
-    var username = req.body.username;
-    var email = req.body.email;
-    var lieu_naissance = req.body.lieu_naissance;
-    var date_naissance = req.body.date_naissance;
-    var section = req.body.section;
-    var classe = req.body.classe;
-    var pwd = req.body.pwd;
-    var tel = req.body.tel;
+    var pwd = bcrypt.hashSync(req.body.pwd, bcrypt.genSaltSync(10));
     var etudiant = {
-      first_name:first_name,
-      last_name:last_name,
-      cin:cin,
-      adress:adress,
-      username:username,
-      email:email,
-      lieu_naissance:lieu_naissance,
-      date_naissance:date_naissance,
-      section:section,
-      classe:classe,
+      first_name:req.body.first_name,
+      last_name:req.body.last_name,
+      cin:req.body.cin,
+      adress:req.body.adress,
+      username:req.body.username,
+      email:req.body.email,
+      lieu_naissance:req.body.lieu_naissance,
+      date_naissance:req.body.date_naissance,
+      section:req.body.section,
+      classe:req.body.classe,
       pwd:pwd,
-      tel:tel
+      tel:req.body.tel
     }
     //use etudiant model to insert/save
     var newetudiant = new Etudiant(etudiant);
@@ -411,7 +416,6 @@ function edit (req, res) {
       var date_naissance = user.date_naissance;
       var section = user.section;
       var classe = user.classe;
-      var date_demande = '07/04/2017';
       var etat = 'false';
       var nature = req.body.demande;
       var email = user.email;
@@ -425,7 +429,6 @@ function edit (req, res) {
         email:email,
         nature:nature,
         etat:etat,
-        date_demande:date_demande,
         first_name:first_name,
         last_name:last_name,
         cin:cin,
@@ -447,7 +450,7 @@ function edit (req, res) {
           res.send(err);
           }
           else{
-            res.send('demande avec succé');
+            res.redirect('demandes');
           }
     });
 

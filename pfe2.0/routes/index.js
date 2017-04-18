@@ -18,13 +18,13 @@ var Etudiant = require('../models/database');
 
 //import main.controller
 mainController = require('../app/controllers/main.controller');
-adminController = require('../app/controllers/admin.controller');
+
 
 //update photo
 router.post('/upload', upload.any(), mainController.uploadPic);
 
 //visit another users profile
-//router.get('/visit/:username',mainController.visit);
+router.get('/visit:username',mainController.visit);
 
 //dem router
 router.get('/dem',mainController.dem);
@@ -40,6 +40,7 @@ router.get('/inbox',mainController.inbox);
 router.get('/',mainController.showHome);
 //Profile
 router.get('/profile',mainController.showProfile);
+router.post('/profile',mainController.edit);
 //Edit profile
 router.post('/edit',mainController.edit);
 //Demandes

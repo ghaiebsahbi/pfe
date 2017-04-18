@@ -16,7 +16,6 @@ var etudiant = new Schema({
   tel: {type: String, required: true} ,
   avatar   : { type: mongoose.Schema.Types.Mixed, required: false,default:'default.jpg' }
 
-
 },
 {versionKey: false}) ;
 

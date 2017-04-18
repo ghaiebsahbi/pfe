@@ -1,11 +1,12 @@
 var express = require('express');
 var path = require('path');
+var bcrypt = require('bcryptjs');
 var ejs = require('ejs');
+var adminRoutes = require('./routes/adminRoutes');
 var routes = require('./routes/index');
-var users = require('./routes/users');
 var port = process.env.PORT || 3000;
 var bodyParser = require('body-parser');
-var session = require('express-session')
+var session = require('express-session');
 
 
 var mongoose = require('mongoose');
@@ -19,44 +20,40 @@ var io = require('socket.io').listen(server);
 app.use(bodyParser.urlencoded({extended: false}));
 
 //test socket io
-
 users = [];
-connections = [];
 
-  io.sockets.on('connection',function(socket){
-  connections.push(socket);
-  for(i in connections){  console.log(connections[i]);}
+io.sockets.on('connection',function(socket){
+  socket.on('new user',function(data, callback){
 
-  console.log('connected %s sockets connected',connections.length);
-  socket.on('join', function (data) {
-  socket.join(data.username);
+    if(data in users){
+      callback(false);
+    }else{
+
+      callback(true);
+      socket.nickname = data;
+      users[socket.nickname] = socket;
+      updateNicknames();
+    }
   });
-  socket.on('disconnect',function(data){
-    //disconnect
-    connections.splice(connections.indexOf(socket),1);
-    console.log('Disconnected %s sockets connected', connections.length);
-  });
-  //send message
-  socket.on('send message',function(data){
-    // console.log(data);
-    io.sockets.in('username').emit('new message',{msg:data});
-  });
-  // socket.on('new user',function(data){
-  //   // console.log(data);
-  //   socket.username = req.session.username;
-  //   users.push(socket.username);
-  //   updateUsernames();
-  // });
-  function updateUsernames(){
-    io.sockets.emit('get users,usernames');
+  function updateNicknames(){
+    io.sockets.emit('usernames', Object.keys(users));
   }
+  socket.on('send message',function(data){
+    io.sockets.emit('new message',{msg:data,nick:socket.nickname});
+  });
+  socket.on('disconnect', function(data){
+    if(!socket.nickname) return;
+    delete users [socket.nickname];
+    updateNicknames();
+  });
 });
-
 
 //test session
 app.use(session({
   secret: 'ih8node',
   resave: false,
+  duration: 30 * 60 * 1000,
+  activeDuration: 5 * 60 * 1000,
   saveUninitialized: true
 }));
 
@@ -72,5 +69,5 @@ server.listen(port, (req, res) =>{
 });
 
 
-
+app.use('/admin',adminRoutes);
 app.use('/',routes);
