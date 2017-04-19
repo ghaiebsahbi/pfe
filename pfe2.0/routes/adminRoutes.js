@@ -31,11 +31,14 @@ admin.get('/visit:username',adminController.visit);
 admin.get('/login',adminController.login);
 admin.post('/login',adminController.login);
 
+//show all Etudiants
+admin.get('/students',adminController.viewAll);
+
 //inbox
 admin.get('/inbox',adminController.inbox);
 
 //Home page
-admin.get('admin',adminController.showHome);
+admin.get('/admin',adminController.showHome);
 //Profile
 admin.get('/profile',adminController.showProfile);
 admin.post('/profile',adminController.edit);

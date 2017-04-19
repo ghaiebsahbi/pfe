@@ -66,56 +66,47 @@
             </div>
 
             <div class="clearfix"></div>
-
-            <div class="row">
-              <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Demandes</h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li style="float:right"><a class="collapse-link"><i class="fa fa-chevron-up" ></i></a>
-                      </li>
-                      </li>
+            <form method="post" action="editetat">
+            <% for (var dem in dems)  {%>
+            <div class="col-md-4 col-sm-4 col-xs-12 profile_details">
+              <div class="well profile_view">
+                <div class="col-sm-12">
+                  <h4 class="brief"><i><%= dems[dem].nature %></i></h4>
+                  <div class="left col-xs-7">
+                    <h2></h2>
+                    <p><strong>first_name: <%= dems[dem].first_name +' '+dems[dem].last_name %> </strong> </p>
+                    <ul class="list-unstyled">
+                      <li> Classe: <%= dems[dem].classe + ' '+dems[dem].section %></li><br>
+                      <li> <div style="float:right;width:250px"><button style="float:right" class="btn btn-success">valider</button><button style="float:right" class="btn btn-danger">Refuser</button></div></li>
                     </ul>
-                    <div class="clearfix"></div>
                   </div>
-                  <form method="post" action="demande_doc">
-                    <div class="x_content">
-                      <div class="radio" style="margin-left:10px">
-                        <input type="radio" value="Attestation de Reussite" name="demande" onclick="show1();">Attestation de reussite<br>
-                        <input type="radio" value="Attestation d'inscription" name="demande" onclick="show1();">Attestation d'inscription<br>
-                        <input type="radio" value="Demandes de Projet" name="demande" id="stage" onclick="show2();">Demandes de PFE/PFA<br>
-                        <input type="radio" value="Relevé de notes" name="demande" onclick="show1();">Relevé de notes<br>
-                        <input type="radio" value="Attestation de présence" name="demande" onclick="show1();">Attestation de présence<br>
-                      </div>
-                      <div id="show-me" hidden="hidden">
-                        <table>
-                          <div class="form-group"><tr><th><label>Encadreur :</label></th><th><input type="text" name="encadreur" class="form-control"></th></tr></div><br>
-                          <tr><th>Description projet: </th><th><textarea name="description" placeholder="description" width="50px" class="form-control"></textarea></th></tr><br>
-                          <tr><th>Binome:</th><th><input type="text" name="binome"></th></tr><br>
-                          <tr><th>Titre Mémoire</th><th><input type="text" name="titre"></th></tr><br>
-                        </table>
-                      </div>
-                      <button class="btn-info">
-                        Valider
-                      </button>
-                    </div>
-                  </form>
+                  <div class="right col-xs-5 text-center">
+                    <img src="" alt="" class="img-circle img-responsive">
+                  </div>
+                </div>
+                <div class="col-xs-12 bottom text-center">
+                  <div class="col-xs-12 col-sm-6 emphasis">
+                    <p class="ratings">
+                      <a>4.0</a>
+                      <a href="#"><span class="fa fa-star"></span></a>
+                      <a href="#"><span class="fa fa-star"></span></a>
+                      <a href="#"><span class="fa fa-star"></span></a>
+                      <a href="#"><span class="fa fa-star"></span></a>
+                      <a href="#"><span class="fa fa-star-o"></span></a>
+                    </p>
+                  </div>
+                  <div class="col-xs-12 col-sm-6 emphasis">
+                    <button type="button" class="btn btn-success btn-xs"> <i class="fa fa-user">
+                    </i> <i class="fa fa-comments-o"></i> </button>
+                    <a href=""><button type="button" class="btn btn-primary btn-xs">
+                      <i class="fa fa-user"></i> View Profile
+                    </button></a>
+                  </div>
                 </div>
               </div>
-              <!--2nd pannel-->
-              <div class="col-md-12 col-sm-12 col-xs-12">
-              <!-- here goes demandes -->
-              <table border="1" class="table table-bordered">
-                <tr><th>Demandes:</th><th>Etat:</th></tr>
-                <% for (var dem in dems) { %><tr scope="row"><th><%= dems[dem].nature%></th><th scope="row"><% if (dems[dem].etat === false){ %> <i class="fa fa-spinner fa-spin fa-1x fa-fw"></i>
-<% } else { %> <i class="fa fa-check" aria-hidden="true"></i><% } %></th></tr>
-                <% } %>
-              </table>
-
-              </div>
-              <!--3rd pannel-->
             </div>
+            <% } %>
+          </form>
           </div>
         </div>
         <!-- /page content -->

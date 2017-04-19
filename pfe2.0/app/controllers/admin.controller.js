@@ -13,6 +13,7 @@ module.exports = {
   inbox:inbox,
   visit:visit,
   edit:edit,
+  viewAll:viewAll,
   uploadPic:uploadPic
 }
         function uploadPic(req, res, next){
@@ -57,6 +58,8 @@ module.exports = {
         var lieu_naissance = data.lieu_naissance;
         var date_naissance = data.date_naissance;
         var tel = data.tel;
+        var classe = data.classe;
+        var section = data.section;
         res.render('admin/visit',{
           first_name2:first_name2,
           last_name2:last_name2,
@@ -70,13 +73,15 @@ module.exports = {
           date_naissance:date_naissance,
           lieu_naissance:lieu_naissance,
           tel:tel,
+          classe:classe,
+          section:section,
           username:username
         });
       });
       }
     });
   }else {
-    res.redirect('login');
+    res.redirect('admin/login');
   }
 }
   function inbox(req,res){
@@ -119,6 +124,27 @@ module.exports = {
 
   });
     res.render('admin/login');
+  }
+  //Show All Etudiants
+  function viewAll(req, res){
+    if(req.session.username){
+      Etudiant.find((err, data) => {
+        Admin.findOne({username:req.session.username},(err, admin) => {
+        //res.send(user);
+        for(var user in data){
+          console.log('user x',data[user].username);
+        }
+          res.render('admin/contacts',{
+            users : data,
+            first_name:admin.first_name,
+            last_name:admin.last_name,
+            avatar:admin.avatar
+          });
+      });
+    });
+    }else {
+      res.redirect('login');
+    }
   }
   //show the home route
   function showHome(req, res) {
@@ -288,67 +314,38 @@ function edit (req, res) {
         res.send('error occured');
       }else if(user.role == 'admin')
       {
-        var avatar = user.avatar;
-        var first_name = user.first_name;
-        var last_name = user.last_name;
-        var cin = user.cin;
-        var adress = user.adress;
-        var username = user.username;
-        var email = user.email;
-        var lieu_naissance = user.lieu_naissance;
-        var date_naissance = user.date_naissance;
-        var section = user.section;
-        var classe = user.classe;
-        var pwd = user.pwd;
-        var tel = user.tel;
-        Demande.find({username:req.session.username},(err, data) => {
-          var dems = [];
-          dems.push(data);
-          dems.forEach(function(dems){
+        Demande.find((err, data) => {
             res.render('admin/demandes',{
-              avatar:avatar,
-              first_name:first_name,
-              last_name:last_name,
-              email:email,
-              cin:cin,
-              pwd:pwd,
-              adress:adress,
-              date_naissance:date_naissance,
-              dems:dems
+              first_name:data.first_name,
+              last_name:data.last_name,
+              email:data.email,
+              cin:data.cin,
+              adress:data.adress,
+              date_naissance:data.date_naissance,
+              dems:data
             });
-          });
         });
 
       }else {
-        var avatar = user.avatar;
-        var first_name = user.first_name;
-        var last_name = user.last_name;
-        var cin = user.cin;
-        var adress = user.adress;
-        var username = user.username;
-        var email = user.email;
-        var lieu_naissance = user.lieu_naissance;
-        var date_naissance = user.date_naissance;
-        var section = user.section;
-        var classe = user.classe;
-        var pwd = user.pwd;
-        var tel = user.tel;
-        Demande.find({username:req.session.username},(err, data) => {
-          var dems = [];
-          dems.push(data);
-          dems.forEach(function(dems){
+        Demande.find((err, data) => {
             res.render('admin/demandes',{
-              avatar:avatar,
-              first_name:first_name,
-              last_name:last_name,
-              email:email,
-              cin:cin,
-              pwd:pwd,
-              adress:adress,
-              date_naissance:date_naissance,
-              dems:dems
+              nature:data.nature,
+              adress:data.adress,
+              first_name:user.first_name,
+              last_name:user.last_name,
+              avatar:user.avatar,
+              section:data.section,
+              clsasse:data.classe,
+              email:data.email,
+              tel:data.tel,
+              first_name1:data.first_name,
+              last_name1:data.last_name,
+              email:data.email,
+              cin:data.cin,
+              adress:data.adress,
+              date_naissance:data.date_naissance,
+              dems:data
             });
-          });
         });
 
       }
