@@ -23,6 +23,7 @@ adminController = require('../app/controllers/admin.controller');
 //update photo
 admin.post('/upload', upload.any(), adminController.uploadPic);
 
+
 //visit another users profile
 admin.get('/visit:username',adminController.visit);
 
@@ -46,7 +47,12 @@ admin.post('/profile',adminController.edit);
 admin.post('/edit',adminController.edit);
 //Demandes
 admin.get('/demandes',adminController.showDemandes);
-
+//show single demande
+admin.get('/dem:id',adminController.dem);
+//Accept demande
+admin.post('/acceptDem',adminController.acceptDem);
+//Delete Demande
+admin.post('/deleteDem',adminController.deleteDem);
 //Demandes POST REQUEST
 admin.post('/demande_doc',adminController.demande_doc);
 

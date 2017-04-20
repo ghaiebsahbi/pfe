@@ -13,9 +13,59 @@ module.exports = {
   inbox:inbox,
   visit:visit,
   edit:edit,
+  dem:dem,
+  acceptDem:acceptDem,
+  deleteDem:deleteDem,
   viewAll:viewAll,
   uploadPic:uploadPic
 }
+
+  function dem(req,res){
+    if(req.session.username){
+      Demande.findOne({'_id':req.params.id},(err, data) => {
+        if(err){
+          throw err;
+        }else
+        {
+          res.json(data);
+        }
+      });
+    }else {
+      res.render('admin/login');
+    }
+  }
+
+  function acceptDem(req,res){
+    if(req.session.username){
+      Demande.findOneAndUpdate({_id:req.body.hidid},{ $set: { 'etat':true }},(err,numAffected) => {
+        if(err){console.log('error');}
+        else
+        {
+          console.log(req.body.hidid);
+          console.log(numAffected);
+        }
+      });
+      res.redirect('demandes');
+    }else {
+      res.redirect('admin/login');
+    }
+  }
+  function deleteDem(req,res){
+    if(req.session.username){
+      Demande.findOneAndRemove({_id:req.body.hidid},(err) => {
+        if(err){
+          throw err;
+        }else {
+          console.log('demande %s supprimé',req.body.hidid);
+        }
+      });
+      res.redirect('demandes');
+
+    }else {
+      res.redirect('admin/login');
+    }
+  }
+
         function uploadPic(req, res, next){
           if(req.session.username){
             var upload = multer().single('avatar');
@@ -327,7 +377,7 @@ function edit (req, res) {
         });
 
       }else {
-        Demande.find((err, data) => {
+        Demande.find({etat:false},(err, data) => {
             res.render('admin/demandes',{
               nature:data.nature,
               adress:data.adress,
