@@ -20,7 +20,7 @@ var io = require('socket.io').listen(server);
 app.use(bodyParser.urlencoded({extended: false}));
 
 //test socket io
-users = [];
+users = {};
 
 io.sockets.on('connection',function(socket){
   socket.on('new user',function(data, callback){
@@ -38,8 +38,9 @@ io.sockets.on('connection',function(socket){
   function updateNicknames(){
     io.sockets.emit('usernames', Object.keys(users));
   }
-  socket.on('send message',function(data){
-    io.sockets.emit('new message',{msg:data,nick:socket.nickname});
+    socket.on('send message',function(data){
+    var to = data.to;
+    io.sockets.emit('new message',{msg:data.msg,nick:socket.nickname});
   });
   socket.on('disconnect', function(data){
     if(!socket.nickname) return;

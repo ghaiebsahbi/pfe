@@ -18,7 +18,7 @@ module.exports = {
   uploadPic:uploadPic
 }
       function uploadPic(req, res, next){
-        if(req.session.username){
+        if(req.session.username && req.session.role == 'etudiant'){
           var upload = multer().single('avatar');
           upload(req, res, function (err) {
             if (err) {
@@ -39,7 +39,7 @@ module.exports = {
       }
 
       function dem(req, res){
-        if(req.session.username){
+        if(req.session.username && req.session.role == 'etudiant'){
         Demande.find({username:req.session.username},(err, data) => {
           if(err){res.send(err)}
           else{
@@ -56,7 +56,7 @@ module.exports = {
     }
   visit
   function visit (req, res) {
-    if(req.session.username){
+    if(req.session.username && req.session.role == 'etudiant'){
           console.log('visite %s from session %s ',req.params.username,req.session.username);
     Etudiant.findOne({username:req.session.username},(err, user) => {
       if(err){
@@ -81,6 +81,7 @@ module.exports = {
         var section = data.section;
         var classe = data.classe;
         var tel = data.tel;
+        console.log(avatar+' '+ avatar2);
         res.render('visit',{
           first_name2:first_name2,
           last_name2:last_name2,
@@ -106,7 +107,7 @@ module.exports = {
   }
 }
   function inbox(req,res){
-    if(req.session.username){
+    if(req.session.username && req.session.role == 'etudiant'){
       console.log('home from session '+req.session.username);
       Etudiant.findOne({username:req.session.username},(err, user) => {
         if(err){
@@ -148,8 +149,7 @@ module.exports = {
   }
   //show the home route
   function showHome(req, res) {
-
-      if(req.session.username){
+      if(req.session.username && req.session.role == 'etudiant'){
         console.log('home from session '+req.session.username);
         Etudiant.findOne({username:req.session.username},(err, user) => {
           if(err){
@@ -191,7 +191,7 @@ module.exports = {
       }
 }
   function showProfile (req, res) {
-    if(req.session.username){
+    if(req.session.username && req.session.role == 'etudiant'){
           console.log('profile from session ');
     Etudiant.findOne({username:req.session.username},(err, user) => {
       if(err){
@@ -237,7 +237,7 @@ module.exports = {
 
 //edit Profile
 function edit (req, res) {
-  if(req.session.username){
+  if(req.session.username && req.session.role == 'etudiant'){
         console.log('profile edited ');
   var pwd = bcrypt.hashSync(req.body.pwd, bcrypt.genSaltSync(10));
   Etudiant.update({username:req.session.username},{
@@ -261,7 +261,7 @@ function edit (req, res) {
   //Login
 
   function login(req, res, next){
-    if(req.session.username){
+    if(req.session.username && req.session.role == 'etudiant'){
       res.redirect('/');
       console.log('session deja en cours session: '+ req.session.username);
     }
@@ -281,6 +281,7 @@ function edit (req, res) {
         var first_name = user.first_name;
         var last_name = user.last_name;
         req.session.username=user.username;
+        req.session.role = user.role;
         console.log('logged in with username '+req.session.username);
         res.render('index',{
           avatar:avatar,
@@ -294,7 +295,7 @@ function edit (req, res) {
 
   //show Demandes
   function showDemandes (req, res) {
-    if(req.session.username){
+    if(req.session.username && req.session.role == 'etudiant'){
     console.log('Demandes from session '+ req.session.username);
     Etudiant.findOne({username:req.session.username},(err, user) => {
       if(err){

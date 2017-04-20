@@ -77,7 +77,6 @@
                     <p><strong>first_name: <%= dems[dem].first_name +' '+dems[dem].last_name %> </strong> </p>
                     <ul class="list-unstyled">
                       <li> Classe: <%= dems[dem].classe + ' '+dems[dem].section %></li><br>
-
                       <li> <div style="float:right;width:250px"><form method="post" action="acceptDem"><input type="text" hidden value="<%= dems[dem].id %>" name="hidid"> <input type="submit" style="float:right" class="btn btn-success" value="valider"></form><form method="post" action="deleteDem"><input type="text" hidden value="<%= dems[dem].id %>" name="hidid"><input type="submit" value="Supprimer" style="float:right" class="btn btn-danger"/> </form></div></li>
                     </ul>
                   </div>

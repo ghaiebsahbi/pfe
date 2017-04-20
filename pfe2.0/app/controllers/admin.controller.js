@@ -21,7 +21,7 @@ module.exports = {
 }
 
   function dem(req,res){
-    if(req.session.username){
+    if(req.session.username && req.session.role == 'admin'){
       Demande.findOne({'_id':req.params.id},(err, data) => {
         if(err){
           throw err;
@@ -36,7 +36,7 @@ module.exports = {
   }
 
   function acceptDem(req,res){
-    if(req.session.username){
+    if(req.session.username && req.session.role == 'admin'){
       Demande.findOneAndUpdate({_id:req.body.hidid},{ $set: { 'etat':true }},(err,numAffected) => {
         if(err){console.log('error');}
         else
@@ -51,7 +51,7 @@ module.exports = {
     }
   }
   function deleteDem(req,res){
-    if(req.session.username){
+    if(req.session.username && req.session.role == 'admin'){
       Demande.findOneAndRemove({_id:req.body.hidid},(err) => {
         if(err){
           throw err;
@@ -67,7 +67,7 @@ module.exports = {
   }
 
         function uploadPic(req, res, next){
-          if(req.session.username){
+          if(req.session.username && req.session.role == 'admin'){
             var upload = multer().single('avatar');
             upload(req, res, function (err) {
               if (err) {
@@ -85,7 +85,7 @@ module.exports = {
         }
 
   function visit (req, res) {
-    if(req.session.username){
+    if(req.session.username && req.session.role == 'admin'){
           console.log('visite %s from session %s ',req.params.username,req.session.username);
     Admin.findOne({username:req.session.username},(err, user) => {
       if(err){
@@ -135,7 +135,7 @@ module.exports = {
   }
 }
   function inbox(req,res){
-    if(req.session.username){
+    if(req.session.username && req.session.role == 'admin'){
       console.log('home from session '+req.session.username);
       Admin.findOne({username:req.session.username},(err, user) => {
         if(err){
@@ -177,7 +177,7 @@ module.exports = {
   }
   //Show All Etudiants
   function viewAll(req, res){
-    if(req.session.username){
+    if(req.session.username && req.session.role == 'admin'){
       Etudiant.find((err, data) => {
         Admin.findOne({username:req.session.username},(err, admin) => {
         //res.send(user);
@@ -198,8 +198,7 @@ module.exports = {
   }
   //show the home route
   function showHome(req, res) {
-
-      if(req.session.username){
+      if(req.session.username && req.session.role == 'admin'){
         console.log('home from session '+req.session.username);
         Admin.findOne({username:req.session.username},(err, user) => {
           if(err){
@@ -241,7 +240,7 @@ module.exports = {
       }
 }
   function showProfile (req, res) {
-    if(req.session.username){
+    if(req.session.username && req.session.role == 'admin'){
           console.log('profile from session ');
     Admin.findOne({username:req.session.username},(err, user) => {
       if(err){
@@ -287,7 +286,7 @@ module.exports = {
 
 //edit Profile
 function edit (req, res) {
-  if(req.session.username){
+  if(req.session.username && req.session.role == 'admin'){
         console.log('profile from session ');
   Admin.update({username:req.session.username},{
     first_name:req.body.first_name,
@@ -310,8 +309,8 @@ function edit (req, res) {
   //Login
 
   function login(req, res, next){
-    if(req.session.username){
-      res.redirect('/admin');
+    if(req.session.username && req.session.role == 'admin'){
+      res.redirect('admin/');
       console.log('session deja en cours session: '+ req.session.username);
     }
     else{
@@ -330,6 +329,7 @@ function edit (req, res) {
         var first_name = user.first_name;
         var last_name = user.last_name;
         req.session.username=user.username;
+        req.session.role = user.role;
         console.log('logged in with Admin '+req.session.username);
         res.render('admin/index',{
           avatar:avatar,
@@ -356,27 +356,14 @@ function edit (req, res) {
 
   //show Demandes
   function showDemandes (req, res) {
-    if(req.session.username){
+    if(req.session.username && req.session.role == 'admin'){
     console.log('Demandes from session '+ req.session.username);
     Admin.findOne({username:req.session.username},(err, user) => {
       if(err){
         throw(err);
         res.send('error occured');
-      }else if(user.role == 'admin')
-      {
-        Demande.find((err, data) => {
-            res.render('admin/demandes',{
-              first_name:data.first_name,
-              last_name:data.last_name,
-              email:data.email,
-              cin:data.cin,
-              adress:data.adress,
-              date_naissance:data.date_naissance,
-              dems:data
-            });
-        });
-
-      }else {
+      }
+      else {
         Demande.find({etat:false},(err, data) => {
             res.render('admin/demandes',{
               nature:data.nature,
