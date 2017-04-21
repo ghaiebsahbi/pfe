@@ -31,7 +31,7 @@ io.sockets.on('connection',function(socket){
 
       callback(true);
       socket.nickname = data;
-      users[socket.nickname] = socket;
+      users[socket.nickname] = socket.id;
       updateNicknames();
     }
   });
@@ -39,12 +39,12 @@ io.sockets.on('connection',function(socket){
     io.sockets.emit('usernames', Object.keys(users));
   }
     socket.on('send message',function(data){
-    var to = data.to;
-    io.sockets.emit('new message',{msg:data.msg,nick:socket.nickname});
+    var to = users[data.to];
+    console.log('message to %s %s',users[data.to],data.msg);
+     io.sockets.to(to).emit('new message',{msg:data.msg,nick:socket.nickname});
   });
   socket.on('disconnect', function(data){
     if(!socket.nickname) return;
-    delete users [socket.nickname];
     updateNicknames();
   });
 });

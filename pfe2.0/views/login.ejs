@@ -86,16 +86,30 @@
                   <input type="text" class="form-control" placeholder="adress" required="required" name="adress"/>
                 </div>
                 <div>
-                  <input type="text" class="form-control" placeholder="date_naissance" required="required" name="date_naissance"/>
+                  <input type="text" class="form-control" placeholder="date_naissance day/month/year" required="required" name="date_naissance"/>
                 </div>
                 <div>
                   <input type="text" class="form-control" placeholder="lieu_naissance" required="required" name="lieu_naissance"/>
                 </div>
-                <div>
-                  <input type="text" class="form-control" placeholder="section" required="required" name="section"/>
+                <div id="section">
+
+                  <select name="section" class="form-control" placeholder="section" required="required">
+                    <option value="licence appliquée en informatique de gestion">licence appliquée en informatique de gestion</option><!-- Gestion de qualité,commerce electronique,GL,GE,GC,telecom,master securité -->
+                    <option value="Gestion de qualité">Gestion de qualité</option>
+                    <option value="Commerce Electronique">Commerce Electronique</option>
+                    <option value="Génie logiciel">Génie logiciel</option>
+                    <option value="Génie Electrique">Génie Electrique</option>
+                    <option value="Génie civile">Génie civile</option>
+                    <option value="Telecom et reseau">Telecom et reseau</option>
+                    <option value="Master Securité">Master Securité</option>
+                  </select><br>
                 </div>
                 <div>
-                  <input type="text" class="form-control" placeholder="classe" required="classe" name="classe"/>
+                  <select name="classe" class="form-control" placeholder="section" required="required">
+                    <option value="1ere">1ere</option>
+                    <option value="2eme">2eme</option>
+                    <option value="3eme">3eme</option>
+                  </select><br>
                 </div>
                 <div>
                   <input type="email" class="form-control" placeholder="Email" required="required" name="email"/>

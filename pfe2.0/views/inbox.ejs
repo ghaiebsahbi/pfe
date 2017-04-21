@@ -129,6 +129,7 @@
         var $username = $('#username') ;
         var $users = $('#users');
         var $to = $('#to');
+        var count = 0;
          $( '#username' ).ready(function(){
         socket.emit('new user',$username.val(),function(data){
           if(data){
@@ -146,10 +147,11 @@
          });
         $messageForm.submit(function(e){
           e.preventDefault();
+          count +=1;
           socket.emit('send message',{msg:$messagebox.val(),to:$to.val()});
           $messagebox.val('');
         });
-        socket.on('new message',function(data){
+          socket.on('new message',function(data){
           $chat.append('<b style="color:black;margin:2px">'+data.nick+' :</b><span>'+data.msg + '</span><br>');
         });
 

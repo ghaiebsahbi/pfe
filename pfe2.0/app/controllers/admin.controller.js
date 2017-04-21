@@ -2,6 +2,7 @@ var Admin = require('../../models/admin.js');
 var Etudiant = require('../../models/database.js');
 var Demande = require('../../models/demande');
 var multer  = require('multer');
+var io = require('socket.io');
 module.exports = {
   showHome:showHome,
   showProfile:showProfile,
@@ -198,6 +199,7 @@ module.exports = {
   }
   //show the home route
   function showHome(req, res) {
+
       if(req.session.username && req.session.role == 'admin'){
         console.log('home from session '+req.session.username);
         Admin.findOne({username:req.session.username},(err, user) => {
@@ -221,7 +223,9 @@ module.exports = {
               res.redirect('login');
             }
             else {
-
+              // io.sockets.on('connection',function(socket){
+              //   io.on('demande',data);
+              // });
             res.render('admin/index',{
               avatar:avatar,
               first_name:first_name,
