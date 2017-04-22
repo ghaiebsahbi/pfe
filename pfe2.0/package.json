@@ -17,6 +17,7 @@
     "mongoose": "*",
     "morgan": "*",
     "multer": "^1.3.0",
+    "passport-facebook": "^2.1.1",
     "socket.io": "^1.7.3"
   }
 }

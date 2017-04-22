@@ -38,6 +38,8 @@ router.get('/inbox',mainController.inbox);
 
 //Home page
 router.get('/',mainController.showHome);
+//Home page
+router.post('/addNewpost',mainController.addNewpost);
 //Profile
 router.get('/profile',mainController.showProfile);
 router.post('/profile',mainController.edit);

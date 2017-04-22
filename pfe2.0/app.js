@@ -42,9 +42,11 @@ io.sockets.on('connection',function(socket){
     var to = users[data.to];
     console.log('message to %s %s',users[data.to],data.msg);
      io.sockets.to(to).emit('new message',{msg:data.msg,nick:socket.nickname});
+     io.sockets.to(socket.nickname.this).emit('new message',{msg:data.msg,nick:socket.nickname});
   });
   socket.on('disconnect', function(data){
     if(!socket.nickname) return;
+    delete users [socket.nickname];
     updateNicknames();
   });
 });

@@ -1,6 +1,7 @@
 var bcrypt = require('bcryptjs');
 var Etudiant = require('../../models/database');
 var Demande = require('../../models/demande');
+var Post = require('../../models/posts');
 var multer  = require('multer');
 module.exports = {
   showHome:showHome,
@@ -15,8 +16,40 @@ module.exports = {
   visit:visit,
   dem:dem,
   edit:edit,
+  addNewpost:addNewpost,
   uploadPic:uploadPic
 }
+  function addNewpost(req, res){
+      if(req.session.username && req.session.role == 'etudiant'){
+        Etudiant.findOne({username:req.session.username},(err, user) => {
+          Post.update((err, data) => {
+            var post={
+              first_name:user.first_name,
+              last_name:user.last_name,
+              content:req.body.post,
+              title:req.body.title
+            }
+            var newpost = new Post(post);
+              //save etudiant
+            newpost.save(function(err, savedObject){
+              if(err){
+                res.send(err);
+                }
+              else {
+                console.log(savedObject);
+                res.redirect('/');
+              }});
+
+          });
+        });
+        // res.render('index',{
+        //   photo:req.body.
+        // });
+      }else{
+        res.redirect('login');
+      }
+  }
+
       function uploadPic(req, res, next){
         if(req.session.username && req.session.role == 'etudiant'){
           var upload = multer().single('avatar');
@@ -152,40 +185,29 @@ module.exports = {
       if(req.session.username && req.session.role == 'etudiant'){
         console.log('home from session '+req.session.username);
         Etudiant.findOne({username:req.session.username},(err, user) => {
+          // Post.find((err,data) => {
           if(err){
             throw(err);
             res.send('error occured');
             }
           else
           {
-            var avatar = user.avatar;
-            var first_name = user.first_name;
-            var last_name = user.last_name;
-            var cin = user.cin;
-            var adress = user.adress;
-            var username = user.username;
-            var date_naissance = user.date_naissance;
-            var lieu_naissance = user.lieu_naissance;
-            var email = user.email;
-            var pwd = user.pwd;
+
             if(req.session.username == null || req.session.username == undefined){
               res.redirect('login');
             }
             else {
 
-            res.render('index',{
-              avatar:avatar,
-              first_name:first_name,
-              last_name:last_name,
-              email:email,
-              cin:cin,
-              pwd:pwd,
-              adress:adress,
-              date_naissance:date_naissance,
-            });
+              res.render('index',{
+                avatar:user.avatar,
+                first_name:user.first_name,
+                last_name:user.last_name,
+                // data:data
+              });
             }
           }
-        });
+        // });
+      });
       }else {
         res.redirect('login');
       }
